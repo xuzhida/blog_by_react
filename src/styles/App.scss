@@ -1,0 +1,72 @@
+/* Base Application Styles */
+body {
+  color: #fff;
+  background: #cccccc;
+}
+
+.index img {
+  margin: 20px auto;
+  border-radius: 4px;
+  background: #fff;
+  display: block;
+}
+
+.index .notice {
+  margin: 20px auto;
+  padding: 15px 0;
+  text-align: center;
+  border: 1px solid #000;
+  border-width: 1px 0;
+  background: #666;
+}
+.app{
+  width: 100%;
+  height: 100%;
+}
+.stage{
+  position: relative;
+  width: 100%;
+  height: 700px;
+}
+.image-sec{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #dddddd;
+  overflow: hidden;
+
+  //增大用户可视距离，既使3D效果更明显
+  perspective: 1800px;
+
+}
+.img-figure{
+    position: absolute;
+    width: 340px;
+    padding: 20px;
+    margin: 0px;
+    box-sizing: border-box;
+    background-color: white;
+  cursor: pointer;
+  transform-origin: 0 50% 0;
+  transform-style: preserve-3d;
+  transition: transform .6s ease-in-out, left .6s ease-in-out, top .6s ease-in-out;
+}
+.img-shit{
+    width: 260px;
+}
+.img-title{
+    text-align: center;
+    margin-top: 0px;
+    color: #a7a0a2;
+    font-size: 16px;
+}
+.clearfix{
+    clear: both;
+}
+.centerimg{
+  width: 360px;
+}
+
+
+
+
