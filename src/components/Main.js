@@ -7,9 +7,9 @@ let ImageDatas = require('../data/imageDatas.json');
 //let yeomanImage = require('../images/yeoman.png');
 function getImageUrl (arr){
     for(var i=0,j = arr.length;i < j;i++){
-      let singleimage = arr[i];
-      singleimage.imageUrl = require('../images/'+singleimage.fileName);
-      arr[i] = singleimage;
+      let singleImage = arr[i];
+        singleImage.imageUrl = require('../images/'+singleImage.fileName);
+      arr[i] = singleImage;
     }
     return arr;
 }
@@ -48,17 +48,7 @@ class AppComponent extends React.Component {
                 }
         };
         this.state = {
-            imgsArrangeArr: [
-                //{
-                //  pos:{
-                //    left:'0',
-                //    top:'0'
-                //  },
-                //  rotate:0, //旋转角度
-                //  isInverse:false //正反面,false表示正面
-                //  isCenter:false 图片是否居中
-                //}
-            ]
+            imgArrangeArr: []
         };
     }
 
@@ -78,8 +68,9 @@ class AppComponent extends React.Component {
      * @param centerIndex 指定居中排布哪一张图片
      */
     reArrange(centerIndex){
-       let Constant = this.Constant,
-           imgArrangeArr = this.state.imgsArrangeArr,
+
+        let Constant = this.Constant,
+           imgArrangeArr = this.state.imgArrangeArr,
            centerPos = Constant.centerPos,
            hPosRange = Constant.hPosRange,
            vPosRange = Constant.vPosRange,
@@ -91,7 +82,8 @@ class AppComponent extends React.Component {
            //存储上部图片状态信息
            imgArrangeTopArr = [],
            //上部分图片数量
-           topImgNum = Math.ceil(Math.random() * 2),
+           //topImgNum = Math.ceil(Math.random() * 2),
+           topImgNum = Math.floor(Math.random() * 2),
            //上部分图片从数组的那个地方拿出来的
            topImgSpliceIndex = 0,
 
@@ -116,17 +108,19 @@ class AppComponent extends React.Component {
                         rotate: get30DegRandom(),
                         isCenter: false
                     }
-                    console.log(imgArrangeTopArr);
+                    //console.log(imgArrangeTopArr);
                 }
             );
-        console.log(topImgNum);
 
+        //console.log(imgArrangeArr);
+        //console.log(imgArrangeCenterArr);
+        console.log(imgArrangeArr.length);
 
         //布局左右两侧的图片
-            for(let i=0,j =imgArrangeArr.length,k=j/2;i<j;i++){
+            for(let i=0,j =imgArrangeArr.length,k=Math.floor(j/2);i<j;i++){
                 let hPosRangeLORX = null;
                 //前半部分布局左边，右半部分布局右边
-                if(i < k){
+                if(i <= k){
                     hPosRangeLORX = hPosRangeLeftSecX;
                 }else{
                     hPosRangeLORX = hPosRangeRightSecX;
@@ -150,8 +144,12 @@ class AppComponent extends React.Component {
             imgArrangeArr.splice(centerIndex,0,imgArrangeCenterArr[0]);
 
             this.setState({
-                imgsArrangeArr:imgArrangeArr
+                imgArrangeArr:imgArrangeArr
             });
+        //console.log(centerIndex);
+        //console.log(imgArrangeArr);
+
+
     }
     //组件加载以后，为每张图片计算其位置范围
     componentDidMount(){
@@ -172,7 +170,7 @@ class AppComponent extends React.Component {
         //计算中心点
         this.Constant.centerPos={
             left:halfStageW-halfImgW*1.2,
-            top:halfStageH-halfImgH*2
+            top:halfStageH-halfImgH*2.8
         }
         //左右两侧位置
             this.Constant.hPosRange.leftSecX[0]=-halfImgW;
@@ -192,35 +190,37 @@ class AppComponent extends React.Component {
     }
 
   render() {
-    var imgFigures = [];
-        //controllerUnits = [];
+    let imgFigures = [],
+        controllerUnits = [];
       ImageDatas.forEach(function(value,index){
 
           //初始化
-          if(!this.state.imgsArrangeArr[index]){
-              this.state.imgsArrangeArr[index] = {
+          if(!this.state.imgArrangeArr[index]){
+              this.state.imgArrangeArr[index] = {
                   pos:{
                       left: 0,
                       top: 0
                   },
                   rotate: 0,
-                  isInverse: false,
+                  //isInverse: false,
                   isCenter: false
-
               }
+
           }
 
-          imgFigures.push(<ImageFigure key = {index} data={value} ref={'imgFigure'+index} imgarrshit={this.state.imgsArrangeArr[index]} center={this.center(index)}/>);
-    }.bind(this));
+          imgFigures.push(<ImageFigure key = {index} data={value} ref={'imgFigure'+index} imgarrshit={this.state.imgArrangeArr[index]} center={this.center(index)}/>);
 
-
+          controllerUnits.push(<ControllerUnit key = {index} controllershit={this.state.imgArrangeArr[index]} center={this.center(index)}/>);
+      }.bind(this));
     return (
 
         <section className="stage index" ref="stage">
           <section className="image-sec">
             {imgFigures}
           </section>
-          <nav className="img-controller"></nav>
+            <nav className="controller-nav">
+                {controllerUnits}
+            </nav>
         </section>
     );
   }
@@ -254,9 +254,6 @@ var ImageFigure = React.createClass({
             styleObj.zIndex = 11;
             styleObj.width=400;
             centerstyle.width=360;
-            //styleObj.img.width=360;
-            //console.log(styleObj);
-            //console.log(this.props);
         }
       return(
       <figure  className="img-figure" style={styleObj} onClick={this.handleClick} >
@@ -270,6 +267,29 @@ var ImageFigure = React.createClass({
   }
 });
 
+var ControllerUnit = React.createClass({
+
+    handleClick(e){
+        if(this.props.controllershit.isCenter){}
+        else{
+            //debugger;
+            this.props.center();
+        }
+        e.preventDefault();
+        e.stopPropagation();
+    },
+
+    render:function(){
+        var controllerClassName = 'controller-unit';
+
+        if(this.props.controllershit.isCenter){
+            controllerClassName += ' is-center';
+        }
+        return(
+          <span className={controllerClassName} onClick={this.handleClick}></span>
+        );
+    }
+});
 AppComponent.defaultProps = {
 };
 
